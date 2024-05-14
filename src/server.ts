@@ -1,5 +1,6 @@
 import login from 'modules/login';
 import signUp from 'modules/signUp';
+import knex from 'postgres/connection';
 import * as readline from 'readline';
 
 // Define the recursive function `rlHome` to handle the main menu and user interaction.
@@ -39,6 +40,10 @@ const server = async () => {
   });
   try {
     await rlHome(rl);
+    knex.destroy().finally(async () => {
+      console.log('DB Connection disconnected.');
+      console.log('All done.');
+    });
   } catch (err) {
     console.error('An error occurred:', err);
     rl.close();

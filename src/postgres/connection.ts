@@ -21,7 +21,7 @@ const knex = Knex({
     port: +(process.env.PORT!),
   },
   pool: {
-    min: 2,
+    min: 1,
     max: 10,
   },
 });

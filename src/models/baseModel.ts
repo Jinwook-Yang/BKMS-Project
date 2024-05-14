@@ -1,3 +1,4 @@
+import { ColumnBuilder, TableBuilder } from 'knex';
 import knex from 'postgres/connection';
 
 export interface BaseEntity {
@@ -6,12 +7,39 @@ export interface BaseEntity {
   updatedAt: Date;
 }
 
-export class BaseModel<T extends BaseEntity> {
-  protected tableName: string;
+interface TableBuilderExtended extends TableBuilder {
+  // eslint-disable-next-line no-use-before-define
+  refersTo: (model: BaseModel) => ColumnBuilder,
+}
 
-  constructor(tableName: string) {
+const getReferenceColumnName = (model: BaseModel) => `${model.tableName}Id`;
+
+export class BaseModel<T extends BaseEntity=any> {
+  public tableName: string;
+  private builder: (table: TableBuilder) => void;
+
+  constructor(tableName: string, builder: (table: TableBuilderExtended) => void) {
     this.tableName = tableName;
+    this.builder = (table: TableBuilder) => {
+      table.increments();
+      table.timestamp('createdAt').defaultTo(knex.fn.now());
+      table.timestamp('updatedAt').defaultTo(knex.fn.now());
+      const tableExtended = (table as TableBuilderExtended);
+      tableExtended.refersTo = (model) => table
+        .integer(getReferenceColumnName(model))
+        .references('id')
+        .inTable(model.tableName);
+      builder(tableExtended);
+    };
   }
+
+  createTableIfNotExists = () => knex.schema.hasTable(this.tableName)
+    .then((result) => {
+      if (!result) {
+        return knex.schema.createTable(this.tableName, this.builder).then(() => true);
+      }
+      return Promise.resolve(false);
+    });
 
   async findAll(): Promise<T[]> {
     return knex(this.tableName).select();
@@ -19,6 +47,10 @@ export class BaseModel<T extends BaseEntity> {
 
   async findById(id: number): Promise<T> {
     return knex(this.tableName).where({ id }).first();
+  }
+
+  async findOne(data: any): Promise<T> {
+    return knex(this.tableName).where(data).first();
   }
 
   async create(data: any): Promise<T[]> {

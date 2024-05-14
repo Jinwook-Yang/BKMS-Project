@@ -5,4 +5,7 @@ export interface UserEntity extends BaseEntity {
   password: string;
 }
 
-export const userModel = new BaseModel<UserEntity>('users');
+export const UsersModel = new BaseModel<UserEntity>('users', (table) => {
+  table.string('userId').notNullable().unique();
+  table.string('password').notNullable();
+});
