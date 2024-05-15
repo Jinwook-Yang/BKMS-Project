@@ -1,12 +1,14 @@
 import deleteUser from 'modules/deleteUser';
 import login from 'modules/login';
 import signUp from 'modules/signUp';
+import updateUser from 'modules/updateUser';
 import knex from 'postgres/connection';
 import * as readline from 'readline';
 
 // Define the recursive function `rlHome` to handle the main menu and user interaction.
 const rlHome = async (rl: readline.Interface): Promise<void> => {
   let isLogined = false;
+  let userId;
   while (true) {
     if (!isLogined) {
       // Use a promise to handle the readline question asynchronously
@@ -18,7 +20,8 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
       switch (mode) {
         case '1':
           console.log('Login mode selected');
-          isLogined = await login(rl); // Assumed to handle its own login interactions
+          userId = await login(rl); // Assumed to handle its own login interactions
+          isLogined = userId !== -1;
           break;
         case '2':
           console.log('Sign up mode selected');
@@ -27,6 +30,10 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
         case '3':
           console.log('Deleting user mode');
           await deleteUser(rl);
+          break;
+        case '4':
+          console.log('Update user mode');
+          // await updateUser(rl);
           break;
         case 'exit':
           console.log('Closing server');
@@ -38,9 +45,13 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
       }
     } else {
       const mode = await new Promise<string>((resolve) => {
-        rl.question('Enter mode (logout: to logout, exit: to exit): ', resolve);
+        rl.question('Enter mode (update: upate user info, logout: to logout, exit: to exit): ', resolve);
       });
       switch (mode) {
+        case 'update':
+          console.log('Update user info');
+          await updateUser(rl, userId!);
+          break;
         case 'logout':
           console.log('Logging out');
           isLogined = false;

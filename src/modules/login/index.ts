@@ -6,15 +6,15 @@ const questionLogin = async (rl: readline.Interface, text: string) => await ques
   rl, `Enter ${text} to login (Enter exit to stop): `,
 )
 
-const login = async (rl: readline.Interface): Promise<boolean> => {
+const login = async (rl: readline.Interface): Promise<number> => {
   let id, pw;
   id = await questionLogin(rl, 'Id');
   if (id === 'exit') {
-    return false;
+    return -1;
   }
   pw = await questionLogin(rl, 'Password');
   if (pw === 'exit') {
-    return false;
+    return -1;
   }
   try {
     const result = await UsersModel.findOne({
@@ -24,16 +24,15 @@ const login = async (rl: readline.Interface): Promise<boolean> => {
     if (result) {
       console.log('User login success!');
       console.log(`Welcome! ${result.userName}`);
-      return true;
+      return result.id;
     } else {
       console.log('User login failed!');
-      return false;
+      return -1;
     }
   } catch (error) {
     console.log(error);
-    return false;
+    return -1;
   }
-  // login by id and password.
 }
 
 export default login;
