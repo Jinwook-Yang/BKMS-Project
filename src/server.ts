@@ -1,3 +1,4 @@
+import deleteUser from 'modules/deleteUser';
 import login from 'modules/login';
 import signUp from 'modules/signUp';
 import knex from 'postgres/connection';
@@ -10,7 +11,7 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
     if (!isLogined) {
       // Use a promise to handle the readline question asynchronously
       const mode = await new Promise<string>((resolve) => {
-        rl.question('Enter mode (1: login mode, 2: sign up mode, exit: to exit): ', resolve);
+        rl.question('Enter mode (1: login mode, 2: sign up mode, 3: delete user mode, exit: to exit): ', resolve);
       });
   
       // Determine the action based on the mode
@@ -22,6 +23,10 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
         case '2':
           console.log('Sign up mode selected');
           await signUp(rl); // Assumed to handle its own sign up interactions
+          break;
+        case '3':
+          console.log('Deleting user mode');
+          await deleteUser(rl);
           break;
         case 'exit':
           console.log('Closing server');

@@ -61,7 +61,11 @@ export class BaseModel<T extends BaseEntity=any> {
     return knex(this.tableName).where({ id }).update(data).returning('*');
   }
 
-  async delete(id: number) {
+  async deleteById(id: number) {
     return knex(this.tableName).where({ id }).del();
+  }
+
+  async deleteByData(data: any) {
+    return knex(this.tableName).where(data).del();
   }
 }
