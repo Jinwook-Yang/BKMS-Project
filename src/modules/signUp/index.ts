@@ -7,7 +7,7 @@ const questionSignUp = async (rl: readline.Interface, text: string) => await que
 )
 
 const signUp = async (rl: readline.Interface) => {
-  let id, pw;
+  let id;
   while (1) {
     id = await questionSignUp(rl, 'Id');
     const result = await UsersModel.findOne({ userId: id });
@@ -20,16 +20,21 @@ const signUp = async (rl: readline.Interface) => {
     }
     break;
   }
-  pw = await questionSignUp(rl, 'Password');
+  let pw = await questionSignUp(rl, 'Password');
   if (pw === 'exit') {
+    return;
+  }
+  let userName = await questionSignUp(rl, 'User Name');
+  if (userName == 'exit') {
     return;
   }
   try {
     await UsersModel.create({
       userId: id,
+      userName: userName,
       password: pw,
     });
-    console.log('User created');
+    console.log(`User ${userName} created!`);
     return;
   } catch (error) {
     console.log(error);

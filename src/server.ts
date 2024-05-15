@@ -5,29 +5,49 @@ import * as readline from 'readline';
 
 // Define the recursive function `rlHome` to handle the main menu and user interaction.
 const rlHome = async (rl: readline.Interface): Promise<void> => {
+  let isLogined = false;
   while (true) {
-    // Use a promise to handle the readline question asynchronously
-    const mode = await new Promise<string>((resolve) => {
-      rl.question('Enter mode (1: login mode, 2: sign up mode, exit: to exit): ', resolve);
-    });
-
-    // Determine the action based on the mode
-    switch (mode) {
-      case '1':
-        console.log('Login mode selected');
-        await login(rl); // Assumed to handle its own login interactions
-        break;
-      case '2':
-        console.log('Sign up mode selected');
-        await signUp(rl); // Assumed to handle its own sign up interactions
-        break;
-      case 'exit':
-        console.log('Closing server');
-        rl.close();
-        return; // Exit the while loop and end the function
-      default:
-        console.log('Invalid mode');
-        break; // The loop will continue, asking the question again
+    if (!isLogined) {
+      // Use a promise to handle the readline question asynchronously
+      const mode = await new Promise<string>((resolve) => {
+        rl.question('Enter mode (1: login mode, 2: sign up mode, exit: to exit): ', resolve);
+      });
+  
+      // Determine the action based on the mode
+      switch (mode) {
+        case '1':
+          console.log('Login mode selected');
+          isLogined = await login(rl); // Assumed to handle its own login interactions
+          break;
+        case '2':
+          console.log('Sign up mode selected');
+          await signUp(rl); // Assumed to handle its own sign up interactions
+          break;
+        case 'exit':
+          console.log('Closing server');
+          rl.close();
+          return; // Exit the while loop and end the function
+        default:
+          console.log('Invalid mode');
+          break; // The loop will continue, asking the question again
+      }
+    } else {
+      const mode = await new Promise<string>((resolve) => {
+        rl.question('Enter mode (logout: to logout, exit: to exit): ', resolve);
+      });
+      switch (mode) {
+        case 'logout':
+          console.log('Logging out');
+          isLogined = false;
+          break; // Logout by using flag.
+        case 'exit':
+          console.log('Closing server');
+          rl.close();
+          return; // Exit the while loop and end the function
+        default:
+          console.log('Invalid mode');
+          break; // The loop will continue, asking the question again
+      }
     }
   }
 };
