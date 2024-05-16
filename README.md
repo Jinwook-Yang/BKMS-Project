@@ -13,4 +13,4 @@ To start:
    PORT=
    ```
 
-5. yarn start
+5. npm start
