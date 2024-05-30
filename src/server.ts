@@ -12,29 +12,30 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
   while (true) {
     if (!isLogined) {
       // Use a promise to handle the readline question asynchronously
+      // Wait until the user enters the valid mode.
       const mode = await new Promise<string>((resolve) => {
-        rl.question('Enter mode (1: login mode, 2: sign up mode, 3: delete user mode, exit: to exit): ', resolve);
+        rl.question('Enter mode (login / signup / delete / update / exit): ', resolve);
       });
   
       // Determine the action based on the mode
       switch (mode) {
-        case '1':
+        // Do the login with the user's email and password.
+        case 'login':
           console.log('Login mode selected');
           userId = await login(rl); // Assumed to handle its own login interactions
           isLogined = userId !== -1;
           break;
-        case '2':
+        // Create new user with the user's email and password.
+        case 'signup':
           console.log('Sign up mode selected');
           await signUp(rl); // Assumed to handle its own sign up interactions
           break;
-        case '3':
+        // Delete the user by using the user's email and password.
+        case 'delete':
           console.log('Deleting user mode');
           await deleteUser(rl);
           break;
-        case '4':
-          console.log('Update user mode');
-          // await updateUser(rl);
-          break;
+        // Exit the server.
         case 'exit':
           console.log('Closing server');
           rl.close();
@@ -44,18 +45,22 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
           break; // The loop will continue, asking the question again
       }
     } else {
+      // If user is already loginned, wait for the user's mode.
       const mode = await new Promise<string>((resolve) => {
-        rl.question('Enter mode (update: upate user info, logout: to logout, exit: to exit): ', resolve);
+        rl.question('Enter mode (update / logout / exit): ', resolve);
       });
       switch (mode) {
+        // Update user's password.
         case 'update':
           console.log('Update user info');
           await updateUser(rl, userId!);
           break;
+        // Logout the current account and go back to main home.
         case 'logout':
           console.log('Logging out');
           isLogined = false;
           break; // Logout by using flag.
+        // Exit the program.
         case 'exit':
           console.log('Closing server');
           rl.close();

@@ -2,6 +2,7 @@ import Knex from 'knex';
 import { types } from 'pg';
 import parseTimestampTz from 'postgres-date';
 
+// Check the value is timestamp and format it to postgres.
 const parseTimestampz = (val: string) => {
   const date = parseTimestampTz(val);
   if (!date || typeof date === 'number') { // The value is number when it is Infinity or -Infinity.
@@ -11,6 +12,7 @@ const parseTimestampz = (val: string) => {
 };
 types.setTypeParser(types.builtins.TIMESTAMPTZ, parseTimestampz);
 
+// Use knex to add connection for the database.
 const knex = Knex({
   client: 'pg',
   connection: {

@@ -1,7 +1,7 @@
 import { BaseModel, BaseEntity } from './baseModel';
 
 export interface UserEntity extends BaseEntity {
-  userEmail: string;
+  userEmail: string; // Did not use userId because Id means index id at DB.
   userName: string;
   password: string;
 }

@@ -6,10 +6,12 @@ const questionSignUp = async (rl: readline.Interface, text: string) => await que
   rl, `Enter ${text} to create (Enter exit to stop): `,
 )
 
+// Sign up to new account.
 const signUp = async (rl: readline.Interface) => {
   let id;
   while (1) {
     id = await questionSignUp(rl, 'Id');
+    // Check if the id already exists.
     const result = await UsersModel.findOne({ userEmail: id });
     if (result) {
       console.log('Id already exists! Try different Id!');
@@ -20,15 +22,18 @@ const signUp = async (rl: readline.Interface) => {
     }
     break;
   }
+  // Wait for the user enters the password.
   let pw = await questionSignUp(rl, 'Password');
   if (pw === 'exit') {
     return;
   }
+  // Wait for the user to enter the name.
   let userName = await questionSignUp(rl, 'User Name');
   if (userName == 'exit') {
     return;
   }
   try {
+    // Create user using user's email and name and password.
     await UsersModel.create({
       userEmail: id,
       userName: userName,

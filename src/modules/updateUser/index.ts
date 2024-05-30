@@ -6,6 +6,8 @@ const questionUpdate = async (rl: readline.Interface, text: string) => await que
   rl, `Enter ${text} to update (Enter exit to stop, Enter nothing to maintain): `, true,
 );
 
+// Update user's password and user's name if the user is already loginned.
+// Use the userId which is PK index of the user table.
 const updateUser = async (rl: readline.Interface, userId: number) => {
   let pw = await questionUpdate(rl, 'Password');
   if (pw === 'exit') {

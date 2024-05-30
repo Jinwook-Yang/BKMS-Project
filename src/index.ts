@@ -4,10 +4,13 @@ import knex from 'postgres/connection';
 import * as readline from 'readline';
 import server from 'server';
 
+// Start Server with console
+// Connect to DB first and check connection.
 connectDb().then(async () => {
   await server();
 });
 
+// On shut down, delete all db connections.
 async function shutdown() {
   knex.destroy().finally(async () => {
     console.log('DB Connection disconnected.');
@@ -18,13 +21,3 @@ async function shutdown() {
 process.on('SIGTERM', async () => {
   await shutdown();
 });
-
-
-// TODO?: create port for server?
-// const app = express();
-// const port = 3000;
-
-// app.listen(port, () => {
-//   console.log(`Server is running on port ${port}`);
-  
-// });

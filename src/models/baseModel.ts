@@ -14,8 +14,11 @@ interface TableBuilderExtended extends TableBuilder {
 
 const getReferenceColumnName = (model: BaseModel) => `${model.tableName}Id`;
 
+// Base model helper class to use knex easily.
+// Add builder and query functions to the model.
 export class BaseModel<T extends BaseEntity=any> {
   public tableName: string;
+  public knex: typeof knex = knex;
   private builder: (table: TableBuilder) => void;
 
   constructor(tableName: string, builder: (table: TableBuilderExtended) => void) {
