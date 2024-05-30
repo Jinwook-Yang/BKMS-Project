@@ -10,7 +10,7 @@ const signUp = async (rl: readline.Interface) => {
   let id;
   while (1) {
     id = await questionSignUp(rl, 'Id');
-    const result = await UsersModel.findOne({ userId: id });
+    const result = await UsersModel.findOne({ userEmail: id });
     if (result) {
       console.log('Id already exists! Try different Id!');
       continue;
@@ -30,7 +30,7 @@ const signUp = async (rl: readline.Interface) => {
   }
   try {
     await UsersModel.create({
-      userId: id,
+      userEmail: id,
       userName: userName,
       password: pw,
     });

@@ -18,7 +18,7 @@ const deleteUser = async (rl: readline.Interface): Promise<boolean> => {
   }
   try {
     const result = await UsersModel.findOne({
-      userId: id,
+      userEmail: id,
       password: pw,
     });
     if (result) {
