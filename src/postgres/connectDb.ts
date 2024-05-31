@@ -24,7 +24,7 @@ const connectDb = async () => {
   console.log('DB Connected');
   console.log('Creating table if not exists');
   // Create tables if it does not exists on DB.
-  await initDb();
+  // await initDb();
   console.log('Table creation complete');
 };
 

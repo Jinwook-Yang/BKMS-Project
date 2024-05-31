@@ -12,5 +12,8 @@ To start:
    HOST=
    PORT=
    ```
-
-5. npm start
+4. cd ./data && edit files at ./data folder for postgres connection
+5. download movielens dataset and rename the dataset columns. (ex. rating.csv: ratingId -> id)
+5. preprocess.py vector_processing.ipynb at ./data folder
+6. cd ../
+7. npm start
