@@ -19,12 +19,12 @@ const login = async (rl: readline.Interface): Promise<number> => {
   }
   try {
     const result = await UsersModel.findOne({
-      userEmail: id,
+      user_email: id,
       password: pw,
     });
     if (result) {
       console.log('User login success!');
-      console.log(`Welcome! ${result.userName}`);
+      console.log(`Welcome! ${result.user_name}`);
       return result.id;
     } else {
       console.log('User login failed!');

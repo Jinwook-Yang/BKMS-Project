@@ -20,7 +20,7 @@ const updateUser = async (rl: readline.Interface, userId: number) => {
   try {
     const update = {
       ...(pw !== '' ? { password: pw } : {}),
-      ...(userName !== '' ? { userName } : {}),
+      ...(userName !== '' ? { user_name: userName } : {}),
     };
     if (Object.keys(update).length === 0) {
       console.log('Nothing to update!');

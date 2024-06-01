@@ -20,13 +20,13 @@ const deleteUser = async (rl: readline.Interface): Promise<boolean> => {
   try {
     // Check if the user exists.
     const result = await UsersModel.findOne({
-      userEmail: id,
+      user_email: id,
       password: pw,
     });
     if (result) {
       while (true) {
         // Check if the user really want to delete.
-        const input = await question(rl, `Are you sure to delete user named ${result.userName}? (yes or no): `);
+        const input = await question(rl, `Are you sure to delete user named ${result.user_name}? (yes or no): `);
         if (input === 'yes') {
           await UsersModel.deleteById(result.id);
           console.log('User deleted!');
