@@ -71,4 +71,6 @@ export class BaseModel<T extends BaseEntity=any> {
   async deleteByData(data: any) {
     return knex(this.tableName).where(data).del();
   }
+
+  table = () => this.knex<T>(this.tableName);
 }

@@ -1,6 +1,9 @@
 import Knex from 'knex';
 import { types } from 'pg';
 import parseTimestampTz from 'postgres-date';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // Check the value is timestamp and format it to postgres.
 const parseTimestampz = (val: string) => {
@@ -18,7 +21,7 @@ const knex = Knex({
   connection: {
     host: process.env.HOST,
     database: process.env.DATABASE,
-    user: process.env.USER,
+    user: process.env.USERNAME,
     password: process.env.PASSWORD,
     port: +(process.env.PORT!),
   },

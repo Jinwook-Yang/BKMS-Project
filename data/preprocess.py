@@ -20,7 +20,7 @@ def create_table(database, user, password, host, port):
     cursor.execute(
         '''
         CREATE TABLE if not exists movies (
-            id INT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             title VARCHAR,
             year INT
         );
@@ -29,62 +29,70 @@ def create_table(database, user, password, host, port):
     cursor.execute(
         '''
         CREATE TABLE if not exists genres (
-            id INT PRIMARY KEY,
-            genreName VARCHAR
+            id SERIAL PRIMARY KEY,
+            genre_name VARCHAR
         );
         '''
     )
     cursor.execute(
         '''
         CREATE TABLE if not exists users (
-            id INT PRIMARY KEY,
-            userEmail VARCHAR,
+            id SERIAL PRIMARY KEY,
+            user_email VARCHAR,
             password VARCHAR,
-            userName VARCHAR
+            user_name VARCHAR
         );
         '''
     )
     cursor.execute(
         '''
         CREATE TABLE if not exists movie_genre (
-            id INT PRIMARY KEY,
-            movieId INT,
-            genreId INT,
-            FOREIGN KEY (movieId) REFERENCES movies(id),
-            FOREIGN KEY (genreId) REFERENCES genres(id),
-            UNIQUE (movieId, genreId)
+            id SERIAL PRIMARY KEY,
+            movie_id INT,
+            genre_id INT,
+            FOREIGN KEY (movie_id) REFERENCES movies(id),
+            FOREIGN KEY (genre_id) REFERENCES genres(id),
+            UNIQUE (movie_id, genre_id)
         );
         '''
     )
     cursor.execute(
         '''
         CREATE TABLE if not exists ratings (
-            id INT PRIMARY KEY,
-            userId INT,
-            movieId INT,
+            id SERIAL PRIMARY KEY,
+            user_id INT,
+            movie_id INT,
             rating FLOAT,
             timestamp TIMESTAMP,
-            FOREIGN KEY (userId) REFERENCES users(id),
-            FOREIGN KEY (movieId) REFERENCES movies(id)
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (movie_id) REFERENCES movies(id)
+            UNIQUE (user_id, movie_id)
         );
         '''
     )
     cursor.execute(
         '''
         CREATE TABLE if not exists tags (
-            id INT PRIMARY KEY,
-            userId INT,
-            movieId INT,
+            id SERIAL PRIMARY KEY,
+            user_id INT,
+            movie_id INT,
             tag VARCHAR,
             timestamp TIMESTAMP,
-            FOREIGN KEY (userId) REFERENCES users(id),
-            FOREIGN KEY (movieId) REFERENCES movies(id)
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (movie_id) REFERENCES movies(id)
         );
         '''
     )
     conn.commit()
     conn.close()
 
+def reset_sequence(cursor, table_name, column_name='id'):
+    cursor.execute(f"""
+        SELECT setval(pg_get_serial_sequence('{table_name}', '{column_name}'), 
+                      COALESCE(MAX({column_name}), 1), 
+                      MAX({column_name}) IS NOT NULL) 
+        FROM {table_name};
+    """)
 
 def insert_data(database, user, password, host, port, data_path):
     conn = psycopg2.connect(
@@ -98,6 +106,7 @@ def insert_data(database, user, password, host, port, data_path):
         next(f)
         cursor.copy_from(f, 'movies', sep='|') 
     conn.commit()
+    reset_sequence(cursor, 'movies')
 
     print("insert genres")
 
@@ -105,12 +114,14 @@ def insert_data(database, user, password, host, port, data_path):
         next(f)
         cursor.copy_from(f, 'genres', sep='|')
     conn.commit()
+    reset_sequence(cursor, 'genres')
 
     print("insert movie_genre")
     with open(data_path + "/movie_genre.csv", 'r', encoding = 'UTF-8') as f:
         next(f)
         cursor.copy_from(f, 'movie_genre', sep='|')
     conn.commit()
+    reset_sequence(cursor, 'movie_genre')
 
 
     print("insert users")
@@ -118,18 +129,21 @@ def insert_data(database, user, password, host, port, data_path):
         next(f)
         cursor.copy_from(f, 'users',  sep='|')
     conn.commit()
+    reset_sequence(cursor, 'users')
 
     print("insert ratings")
     with open(data_path + "/ratings.csv", 'r', encoding = 'UTF-8') as f:
         next(f)
         cursor.copy_from(f, 'ratings', sep='|')
     conn.commit()
+    reset_sequence(cursor, 'ratings')
 
     print("insert tags")
     with open(data_path + "/tags.csv", 'r', encoding = 'UTF-8') as f:
         next(f)
         cursor.copy_from(f, 'tags',  sep='|')
     conn.commit()
+    reset_sequence(cursor, 'tags')
 
     conn.close()
 
@@ -146,7 +160,7 @@ def create_view(database, user, password, host, port):
         """CREATE VIEW view_movie_ratings AS (
         SELECT m.id, m.title, ROUND(AVG(r.rating)::numeric, 1) AS avg_rating
         FROM movies m
-        JOIN ratings r ON m.id = r.movieid 
+        JOIN ratings r ON m.id = r.movie_id 
         GROUP BY m.id, m.title
         );""")
 
@@ -164,10 +178,10 @@ def create_trigger(database, user, password, host, port):
     RETURNS TRIGGER AS $$
     BEGIN
     -- ratings 테이블에서 사용자 관련 데이터 삭제
-    DELETE FROM ratings WHERE userid = OLD.id;
+    DELETE FROM ratings WHERE user_id = OLD.id;
 
     -- tags 테이블에서 사용자 관련 데이터 삭제
-    DELETE FROM tags WHERE userid = OLD.id;
+    DELETE FROM tags WHERE user_id = OLD.id;
 
     RETURN OLD;
     END;
