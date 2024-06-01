@@ -1,5 +1,6 @@
 import deleteUser from 'modules/deleteUser';
 import login from 'modules/login';
+import searchMovie from 'modules/searchMovie';
 import signUp from 'modules/signUp';
 import updateUser from 'modules/updateUser';
 import knex from 'postgres/connection';
@@ -47,9 +48,13 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
     } else {
       // If user is already loginned, wait for the user's mode.
       const mode = await new Promise<string>((resolve) => {
-        rl.question('Enter mode (update / logout / exit): ', resolve);
+        rl.question('Enter mode (search / update / logout / exit): ', resolve);
       });
       switch (mode) {
+        case 'search':
+          console.log('Search movie');
+          await searchMovie(rl, userId!);
+          break;
         // Update user's password.
         case 'update':
           console.log('Update user info');
