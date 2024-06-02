@@ -50,7 +50,7 @@ const searchMovie = async (rl: readline.Interface, userId: number) => {
               JOIN genres ON movie_genre.genre_id = genres.id 
               WHERE movie_id = ${movieId};`);
             console.log('Genres: ', genres.rows.map((genre: any) => genre.genre_name).join(', '));
-            return selectedMovie;
+            return movieId;
           }
         }
         console.log('Invalid movie number');

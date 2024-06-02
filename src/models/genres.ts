@@ -4,6 +4,6 @@ export interface MovieGenresEntity extends BaseEntity {
   genre_name: string,
 }
 
-export const GenresModel = new BaseModel<MovieGenresEntity>('ratings', (table) => {
+export const GenresModel = new BaseModel<MovieGenresEntity>('genres', (table) => {
   table.string('genre_name').notNullable();
 });

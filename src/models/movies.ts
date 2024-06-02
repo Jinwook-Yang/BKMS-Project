@@ -9,5 +9,5 @@ export interface MoviesEntity extends BaseEntity {
 export const MoviesModel = new BaseModel<MoviesEntity>('movies', (table) => {
   table.string('title').notNullable();
   table.string('year').notNullable();
-  table.jsonb('movie_embedding').notNullable();
+  table.specificType('movie_embedding', 'VECTOR(100)');
 });

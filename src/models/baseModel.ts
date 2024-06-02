@@ -3,8 +3,6 @@ import knex from 'postgres/connection';
 
 export interface BaseEntity {
   id: number;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 interface TableBuilderExtended extends TableBuilder {
@@ -25,8 +23,6 @@ export class BaseModel<T extends BaseEntity=any> {
     this.tableName = tableName;
     this.builder = (table: TableBuilder) => {
       table.increments();
-      table.timestamp('createdAt').defaultTo(knex.fn.now());
-      table.timestamp('updatedAt').defaultTo(knex.fn.now());
       const tableExtended = (table as TableBuilderExtended);
       tableExtended.refersTo = (model) => table
         .integer(getReferenceColumnName(model))

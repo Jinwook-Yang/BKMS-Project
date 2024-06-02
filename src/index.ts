@@ -84,9 +84,9 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
           // Search movie and recommend or rate the movie.
           console.log('Search movie');
           // Movie searched and selected by user.
-          const selectedMovie = await searchMovie(rl, userId!);
+          const selectedMovieId = await searchMovie(rl, userId!);
           // If the user selects -1, go back to the main menu.
-          if (selectedMovie === -1) {
+          if (selectedMovieId === -1) {
             break;
           }
           const nextAction = await new Promise<string>((resolve) => {
@@ -95,11 +95,11 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
           switch (nextAction) {
             case 'recommend':
               // Get recommendation based on vector similarity.
-              await recommendMovie(rl, userId!, Number(selectedMovie));
+              await recommendMovie(rl, userId!, Number(selectedMovieId));
               break;
             case 'rate':
               // Rate the movie.
-              await rateMovie(rl, userId!, Number(selectedMovie));
+              await rateMovie(rl, userId!, Number(selectedMovieId));
               break;
             case 'back':
               break;

@@ -8,7 +8,7 @@ export interface TagsEntity extends BaseEntity {
   timestamp: Date,
 }
 
-export const TagsModel = new BaseModel<TagsEntity>('ratings', (table) => {
+export const TagsModel = new BaseModel<TagsEntity>('tags', (table) => {
   table.integer('user_id').references('id').inTable('users').notNullable();
   table.integer('movie_id').references('id').inTable('movies').notNullable();
   table.string('tag').notNullable();
