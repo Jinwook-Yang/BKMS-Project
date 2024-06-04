@@ -15,7 +15,7 @@ const questionYesOrNo = async (rl: readline.Interface, tag: string) => await que
 const tagMovie = async (rl: readline.Interface, userId: number, movieId: number) => {
   const currentTag = (await TagsModel.findOne({ user_id: userId, movie_id: movieId }))?.tag;
   if (currentTag) {
-    console.log('Your current rating is: ', currentTag.toString());
+    console.log('Your current tag is: ', currentTag.toString());
   }
   while (true) {
     let tag = (await questionTag(rl)) as string;
@@ -29,7 +29,7 @@ const tagMovie = async (rl: readline.Interface, userId: number, movieId: number)
     let yesOrNo = await questionYesOrNo(rl, tag);
     if (yesOrNo !== 'yes') {
       if (yesOrNo === 'no') {
-        console.log('Rating canceled');
+        console.log('Tag canceled');
       } else {
         console.log('Invalid input');
       }
