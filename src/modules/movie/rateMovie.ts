@@ -8,7 +8,7 @@ const questionRate = async (rl: readline.Interface) => await question(
 );
 
 const questionYesOrNo = async (rl: readline.Interface, rate: number) => await question(
-  rl, `Do you really want to rate this movie ${rate} (yes / no):`,
+  rl, `Do you really want to rate this movie ${rate} (yes / no): `,
 );
 
 // Search movie by movie name.
@@ -28,6 +28,11 @@ const rateMovie = async (rl: readline.Interface, userId: number, movieId: number
     }
     let yesOrNo = await questionYesOrNo(rl, +rate);
     if (yesOrNo !== 'yes') {
+      if (yesOrNo === 'no') {
+        console.log('Rating canceled');
+      } else {
+        console.log('Invalid input');
+      }
       continue;
     }
     try {

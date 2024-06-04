@@ -50,6 +50,12 @@ const searchMovie = async (rl: readline.Interface, userId: number) => {
               JOIN genres ON movie_genre.genre_id = genres.id 
               WHERE movie_id = ${movieId};`);
             console.log('Genres: ', genres.rows.map((genre: any) => genre.genre_name).join(', '));
+            const tags = await knex.raw(`
+              SELECT tag FROM tags
+              WHERE movie_id = ${movieId};`);
+            // Use Set to remove duplicate tags
+            const tagsList = new Set(tags.rows.map((tag: any) => tag.tag));
+            console.log('Tags: ', [...tagsList].join(', '));
             return movieId;
           }
         }

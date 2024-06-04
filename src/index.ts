@@ -10,6 +10,7 @@ import recommendMovie from 'modules/movie/recommendMovie';
 import rateMovie from 'modules/movie/rateMovie';
 import getUserInfo from 'modules/userInfo';
 import getMovieRanking from 'modules/ranking';
+import tagMovie from 'modules/movie/tagMovie';
 
 // Start Server with console
 // Connect to DB first and check connection.
@@ -92,7 +93,7 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
             break;
           }
           const nextAction = await new Promise<string>((resolve) => {
-            rl.question(`Enter action for the movie (recommend / rate / back): `, resolve);
+            rl.question(`Enter action for the movie (recommend / rate / tag / back): `, resolve);
           });
           switch (nextAction) {
             case 'recommend':
@@ -103,11 +104,15 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
               // Rate the movie.
               await rateMovie(rl, userId, Number(selectedMovieId));
               break;
+            case 'tag':
+              // Tag the movie.
+              await tagMovie(rl, userId, Number(selectedMovieId));
+              break;
             case 'back':
               break;
             default:
               console.log('Invalid command');
-              return;
+              break;
           }
           break;
         // Get movie ranking based on average rating.
