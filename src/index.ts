@@ -9,6 +9,7 @@ import updateUser from 'modules/updateUser';
 import recommendMovie from 'modules/movie/recommendMovie';
 import rateMovie from 'modules/movie/rateMovie';
 import getUserInfo from 'modules/userInfo';
+import getMovieRanking from 'modules/ranking';
 
 // Start Server with console
 // Connect to DB first and check connection.
@@ -78,7 +79,7 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
     } else {
       // If user is already loginned, wait for the user's mode.
       const mode = await new Promise<string>((resolve) => {
-        rl.question('Enter mode (search / update / logout / info / exit): ', resolve);
+        rl.question('Enter mode (search / ranking / update / info / logout / exit): ', resolve);
       });
       switch (mode) {
         case 'search':
@@ -109,6 +110,10 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
               return;
           }
           break;
+        // Get movie ranking based on average rating.
+        case 'ranking':
+          await getMovieRanking();
+          break;
         // Update user's password.
         case 'update':
           console.log('Update user info');
@@ -124,8 +129,8 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
           console.log('Closing server');
           rl.close();
           return; // Exit the while loop and end the function
+        // Get user info.
         case 'info':
-          // Get user info.
           await getUserInfo(userId);
           break;
         default:
