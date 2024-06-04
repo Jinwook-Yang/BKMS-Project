@@ -11,6 +11,7 @@ import rateMovie from 'modules/movie/rateMovie';
 import getUserInfo from 'modules/userInfo';
 import getMovieRanking from 'modules/ranking';
 import tagMovie from 'modules/movie/tagMovie';
+import about from 'modules/about';
 
 // Start Server with console
 // Connect to DB first and check connection.
@@ -48,7 +49,7 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
       // Use a promise to handle the readline question asynchronously
       // Wait until the user enters the valid mode.
       const mode = await new Promise<string>((resolve) => {
-        rl.question('Enter mode (login / signup / delete / exit): ', resolve);
+        rl.question('Enter mode (login / signup / delete / about / exit): ', resolve);
       });
   
       // Determine the action based on the mode
@@ -67,6 +68,10 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
         case 'delete':
           console.log('Deleting user mode');
           await deleteUser(rl);
+          break;
+        // About the server.
+        case 'about':
+          await about();
           break;
         // Exit the server.
         case 'exit':
