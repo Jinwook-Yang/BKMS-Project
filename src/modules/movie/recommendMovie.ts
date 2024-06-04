@@ -8,7 +8,7 @@ const questionGenre = async (rl: readline.Interface) => await question(
 );
 
 // Search movie by movie name.
-const recommendMovie = async (rl: readline.Interface, userId: number, movieId: number) => {
+const recommendMovie = async (rl: readline.Interface, movieId: number) => {
   const currentMovieEmbedding = (await MoviesModel.findOne({
     id: movieId,
   }))?.movie_embedding;

@@ -12,7 +12,7 @@ const questionMovie = async (rl: readline.Interface) => await question(
 );
 
 // Search movie by movie name.
-const searchMovie = async (rl: readline.Interface, userId: number) => {
+const searchMovie = async (rl: readline.Interface) => {
   while (true) {
     let searchParam = await questionSearch(rl);
     if (searchParam === 'exit') {

@@ -1,6 +1,7 @@
 import { UsersModel } from 'models/users';
 import knex from 'postgres/connection'
 
+// Get user information including rated movies and tags.
 const getUserInfo = async (userId: number) => {
   const userInfo = await UsersModel.findById(userId);
   console.log('User Email: ', userInfo.user_email);
@@ -17,10 +18,12 @@ const getUserInfo = async (userId: number) => {
     JOIN movies ON tags.movie_id = movies.id
     WHERE users.id = ${userId};
   `);
+  // Create a map to store tags by movie_id
   const tagsMap = new Map();
   for (let i = 0; i < resultTags.rows.length; i++) {
     tagsMap.set(resultTags.rows[i].movie_id, resultTags.rows[i]);
   }
+  // Merge ratings and tags
   const result = [];
   for (let i = 0; i < resultRatings.rows.length; i++) {
     if (tagsMap.has(resultRatings.rows[i].movie_id)) {
@@ -38,6 +41,7 @@ const getUserInfo = async (userId: number) => {
       });
     }
   }
+  // Add tags that are not rated
   for (let [key, value] of tagsMap) {
     result.push({
       title: value.title,
@@ -45,7 +49,6 @@ const getUserInfo = async (userId: number) => {
       tag: value.tag,
     });
   }
-
 
   if (result.length === 0) {
     console.log('No rated movies');

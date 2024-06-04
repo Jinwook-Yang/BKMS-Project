@@ -1,5 +1,6 @@
 import knex from 'postgres/connection';
 
+// Get top 10 movies based on average rating.
 const getMovieRanking = async () => {
   const result = await knex.raw(`
     SELECT row_number() OVER (ORDER BY avg_rating DESC) AS rank, title, avg_rating
