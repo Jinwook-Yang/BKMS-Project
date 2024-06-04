@@ -8,6 +8,7 @@ import signUp from 'modules/signUp';
 import updateUser from 'modules/updateUser';
 import recommendMovie from 'modules/movie/recommendMovie';
 import rateMovie from 'modules/movie/rateMovie';
+import getUserInfo from 'modules/userInfo';
 
 // Start Server with console
 // Connect to DB first and check connection.
@@ -77,7 +78,7 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
     } else {
       // If user is already loginned, wait for the user's mode.
       const mode = await new Promise<string>((resolve) => {
-        rl.question('Enter mode (search / update / logout / exit): ', resolve);
+        rl.question('Enter mode (search / update / logout / info / exit): ', resolve);
       });
       switch (mode) {
         case 'search':
@@ -95,11 +96,11 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
           switch (nextAction) {
             case 'recommend':
               // Get recommendation based on vector similarity.
-              await recommendMovie(rl, userId!, Number(selectedMovieId));
+              await recommendMovie(rl, userId, Number(selectedMovieId));
               break;
             case 'rate':
               // Rate the movie.
-              await rateMovie(rl, userId!, Number(selectedMovieId));
+              await rateMovie(rl, userId, Number(selectedMovieId));
               break;
             case 'back':
               break;
@@ -111,7 +112,7 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
         // Update user's password.
         case 'update':
           console.log('Update user info');
-          await updateUser(rl, userId!);
+          await updateUser(rl, userId);
           break;
         // Logout the current account and go back to main home.
         case 'logout':
@@ -123,6 +124,10 @@ const rlHome = async (rl: readline.Interface): Promise<void> => {
           console.log('Closing server');
           rl.close();
           return; // Exit the while loop and end the function
+        case 'info':
+          // Get user info.
+          await getUserInfo(userId);
+          break;
         default:
           console.log('Invalid mode');
           break; // The loop will continue, asking the question again
